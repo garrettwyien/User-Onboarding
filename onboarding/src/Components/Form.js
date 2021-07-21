@@ -3,8 +3,9 @@ import React from 'react';
 export default function Form(props) {
     const {values, update, submit, disabled, errors} = props;
     const onChange = evt => {
-        const { name, value } = evt.target;
-        update(name, value);
+        const { name, value, type, checked } = evt.target;
+        const valueToUse = type === 'checkbox' ? checked : value
+        update(name, valueToUse);
     };
     const onSubmit = evt => {
         evt.preventDefault();
@@ -14,13 +15,22 @@ export default function Form(props) {
     return (
         <form className='form container' onSubmit={onSubmit}>
             <div className='form-group inputs'>
-                <label htmlFor='name'> Name
+                <label htmlFor='first_name'>First name
                     <input 
-                    id='name'
+                    id='first_name'
                     type='text'
-                    name='name'
+                    name='first_name'
                     onChange={onChange}
-                    value={values.name}
+                    value={values.first_name}
+                    />
+                </label>
+                <label htmlFor='last_name'>Last name
+                    <input 
+                    id='last_name'
+                    type='text'
+                    name='last_name'
+                    onChange={onChange}
+                    value={values.last_name}
                     />
                 </label>
 
@@ -63,7 +73,7 @@ export default function Form(props) {
                 </label> */}
 
                 <div className='submit'>
-                <button>submit</button>
+                <button disabled={disabled}>Submit</button>
                 </div>
             </div>
         </form>

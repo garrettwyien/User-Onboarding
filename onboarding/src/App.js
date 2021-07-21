@@ -7,7 +7,8 @@ import Form from './Components/Form';
 const initialTeam = [];
 const initialFormValues = {
   //Text//
-  name: '',
+  first_name: '',
+  last_name: '',
   //Email//
   email: '',
   //Password//
@@ -16,7 +17,8 @@ const initialFormValues = {
   tos: false,
 };
 const initialFormErrors = {
-  name: '',
+  first_name: '',
+  last_name: '',
   email: '',
   password: '',
   tos: false,
@@ -32,8 +34,8 @@ function App() {
   const getTeam = () => {
     axios.get(`https://reqres.in/api/users`)
       .then(res => {
-        console.log(res.data);
-        setTeam(res.data);
+        console.log(res.data.data);
+        setTeam(res.data.data);
       })
       .catch(err => {
         console.log(err);
@@ -43,6 +45,7 @@ function App() {
   const postNewUser = newUser => {
     axios.post(`https://reqres.in/api/users`, newUser)
     .then(res => {
+      console.log(res);
       setTeam([res.data, ...team]);
     })
     .catch(err => {
@@ -59,8 +62,10 @@ function App() {
 
   const submitForm = () => {
     const newUser = {
-      name: formValues.name.trim(),
+      id: team.length + 1,
       email: formValues.email.trim(),
+      first_name: formValues.first_name.trim(),
+      last_name: formValues.last_name.trim(),
       password: formValues.password.trim(),
       tos: formValues.tos,
     };
