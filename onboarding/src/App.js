@@ -1,8 +1,10 @@
-import logo from './logo.svg';
 import './App.css';
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import Form from './Components/Form';
+import { reach } from 'yup';
+import formSchema from './validation/formSchema';
+import Roster from './Components/Roster';
 
 const initialTeam = [];
 const initialFormValues = {
@@ -34,7 +36,6 @@ function App() {
   const getTeam = () => {
     axios.get(`https://reqres.in/api/users`)
       .then(res => {
-        console.log(res.data.data);
         setTeam(res.data.data);
       })
       .catch(err => {
@@ -45,7 +46,6 @@ function App() {
   const postNewUser = newUser => {
     axios.post(`https://reqres.in/api/users`, newUser)
     .then(res => {
-      console.log(res);
       setTeam([res.data, ...team]);
     })
     .catch(err => {
@@ -55,9 +55,16 @@ function App() {
       setFormValues(initialFormValues);
     })
   };
+  const validate = (name, value) => {
+    reach(formSchema, name)
+    .validate(value)
+    .then(() => setFormErrors({ ...formErrors, [name]: ''}))
+    .catch(err => setFormErrors({ ...formErrors, [name]: err.errors[0]}))
+  };
 
   const updateForm = (inputName, inputValue) => {
-    setFormValues({ ...formValues, [inputName]: inputValue})
+    validate(inputName, inputValue);
+    setFormValues({ ...formValues, [inputName]: inputValue});
   };
 
   const submitForm = () => {
@@ -67,7 +74,6 @@ function App() {
       first_name: formValues.first_name.trim(),
       last_name: formValues.last_name.trim(),
       password: formValues.password.trim(),
-      tos: formValues.tos,
     };
     // if (newUser.username || newUser.email || newUser.password || newUser.tos === true) 
     postNewUser(newUser);
@@ -77,18 +83,23 @@ function App() {
     getTeam()
   }, []);
 
+  useEffect(() => {
+    formSchema.isValid(formValues)
+    .then(valid => setDisabled(!valid))
+  }, [formValues]);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <h1>Form App</h1>
-        <Form 
+      {/* <header className="App-header">
+      </header> */}
+      <Form 
         values={formValues}
         update={updateForm}
         submit={submitForm}
+        disabled={disabled}
+        errors={formErrors}
         />
-
-      </header>
+      <Roster roster={team}/>
     </div>
   );
 }

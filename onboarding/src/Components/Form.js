@@ -14,6 +14,7 @@ export default function Form(props) {
 
     return (
         <form className='form container' onSubmit={onSubmit}>
+            <h2>Create a user</h2>
             <div className='form-group inputs'>
                 <label htmlFor='first_name'>First name
                     <input 
@@ -33,7 +34,6 @@ export default function Form(props) {
                     value={values.last_name}
                     />
                 </label>
-
                 <label htmlFor='email'> Email
                     <input 
                     id='email'
@@ -74,6 +74,13 @@ export default function Form(props) {
 
                 <div className='submit'>
                 <button disabled={disabled}>Submit</button>
+                </div>
+                <div className='errors'>
+                    <div>{errors.first_name}</div>
+                    <div>{errors.last_name}</div>
+                    <div>{errors.email}</div>
+                    <div>{errors.password}</div>
+                    <div>{errors.tos}</div>
                 </div>
             </div>
         </form>
